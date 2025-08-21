@@ -323,10 +323,8 @@ CBlockTemplate* BlockAssembler::CreateNewBlock(const CScript& scriptPubKeyIn)
         pindexPrev->GetBlockTime() + nMinSpacing,
         static_cast<int64_t>(pblock->nTime)
     });
-    // Apply final timestamp constraints
-    pblock->nTime = std::max(static_cast<uint32_t>(nMinAllowedTime), static_cast<uint32_t>(pblock->nTime));
-    pblock->nTime = std::min(static_cast<uint32_t>(pblock->nTime), static_cast<uint32_t>(nMaxFutureTime));
-    //pblock->nTime = pindexPrev->GetBlockTime() + nMinSpacing + 1;
+    
+    pblock->nTime = std::min(static_cast<uint32_t>(nMinAllowedTime), static_cast<uint32_t>(nMaxFutureTime));
     
     // Log timing information for debugging
     int64_t nActualSpacing = pblock->nTime - pindexPrev->GetBlockTime();
