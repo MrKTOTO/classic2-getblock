@@ -323,8 +323,8 @@ CBlockTemplate* BlockAssembler::CreateNewBlock(const CScript& scriptPubKeyIn)
     // Log timing information for debugging
     int64_t nActualSpacing = pblock->nTime - pindexPrev->GetBlockTime();
     if (nActualSpacing < nMinSpacing) {
-        LogPrintf("CreateNewBlock(): Warning - block spacing %d seconds is less than minimum %d seconds\n", 
-                  nActualSpacing, nMinSpacing);
+        LogPrintf("CreateNewBlock(): Warning - block spacing %d seconds is less than minimum %d seconds: cur time %d prev time %d\n", 
+                  nActualSpacing, nMinSpacing, pblock->nTime, pindexPrev->GetBlockTime());
     }
     
     pblock->nBits = GetNextWorkRequired(pindexPrev, pblock, chainparams.GetConsensus());
