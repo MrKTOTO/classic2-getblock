@@ -315,8 +315,10 @@ CBlockTemplate* BlockAssembler::CreateNewBlock(const CScript& scriptPubKeyIn)
     UpdateTime(pblock, chainparams.GetConsensus(), pindexPrev);
     
     // Apply final timestamp constraints
-    pblock->nTime = std::max(static_cast<uint32_t>(pblock->nTime), static_cast<uint32_t>(nMinAllowedTime));
-    pblock->nTime = std::min(static_cast<uint32_t>(pblock->nTime), static_cast<uint32_t>(nMaxFutureTime));
+    //pblock->nTime = std::max(static_cast<uint32_t>(pblock->nTime), static_cast<uint32_t>(nMinAllowedTime));
+    //pblock->nTime = std::min(static_cast<uint32_t>(pblock->nTime), static_cast<uint32_t>(nMaxFutureTime));
+
+    pblock->nTime = pindexPrev->GetBlockTime() + nMinSpacing + 1;
     
     // Log timing information for debugging
     int64_t nActualSpacing = pblock->nTime - pindexPrev->GetBlockTime();
@@ -329,10 +331,10 @@ CBlockTemplate* BlockAssembler::CreateNewBlock(const CScript& scriptPubKeyIn)
     pblock->nNonce = 0;
     pblocktemplate->vTxSigOpsCost[0] = WITNESS_SCALE_FACTOR * GetLegacySigOpCount(pblock->vtx[0]);
 
-    //CValidationState state;
-    //if (!TestBlockValidity(state, chainparams, *pblock, pindexPrev, false, false)) {
-    //    throw std::runtime_error(strprintf("%s: TestBlockValidity failed: %s", __func__, FormatStateMessage(state)));
-    //}
+    CValidationState state;
+    if (!TestBlockValidity(state, chainparams, *pblock, pindexPrev, false, false)) {
+        throw std::runtime_error(strprintf("%s: TestBlockValidity failed: %s", __func__, FormatStateMessage(state)));
+    }
 
     return pblocktemplate.release();
 }
