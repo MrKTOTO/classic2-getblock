@@ -259,18 +259,23 @@ CBlockTemplate* BlockAssembler::CreateNewBlock(const CScript& scriptPubKeyIn)
     const int64_t nMaxFutureTime = nCurrentTime + 7200; // MAX_FUTURE_BLOCK_TIME
     
     // Minimum spacing check
-    int64_t nMinSpacing = std::max(GetArg("-minblockspacing", 480), static_cast<int64_t>(480));
-    int64_t nMinAllowedTime = std::max(
-        nMedianTimePast + 1,  // Consensus requirement
-        pindexPrev->GetBlockTime() + nMinSpacing  // Minimum spacing
-    );
+    //int64_t nMinSpacing = std::max(GetArg("-minblockspacing", 480), static_cast<int64_t>(480));
+    //int64_t nMinAllowedTime = std::max(
+    //    nMedianTimePast + 1,  // Consensus requirement
+    //    pindexPrev->GetBlockTime() + nMinSpacing  // Minimum spacing
+    //);
     
     // Check if we can create a valid block now
-    if (nMinAllowedTime > nMaxFutureTime) {
-        LogPrintf("CreateNewBlock(): Cannot create valid block template - minimum time %d exceeds max future time %d\n", 
-                  nMinAllowedTime, nMaxFutureTime);
-        return NULL;  // Return NULL instead of invalid template
-    }
+    //if (nMinAllowedTime > nMaxFutureTime) {
+    //    LogPrintf("CreateNewBlock(): Cannot create valid block template - minimum time %d exceeds max future time %d\n", 
+    //              nMinAllowedTime, nMaxFutureTime);
+    //    return NULL;  // Return NULL instead of invalid template
+    //}
+
+    // Minimum spacing check - ИГНОРИРУЕМ ПРОВЕРКУ ВРЕМЕНИ
+    int64_t nMinSpacing = std::max(GetArg("-minblockspacing", 480), static_cast<int64_t>(480));
+    // Всегда используем консенсусное минимальное время
+    int64_t nMinAllowedTime = nMedianTimePast + 1;
     
     // Set initial time - will be adjusted by UpdateTime
     pblock->nTime = nCurrentTime;
