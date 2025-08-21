@@ -278,7 +278,8 @@ CBlockTemplate* BlockAssembler::CreateNewBlock(const CScript& scriptPubKeyIn)
     int64_t nMinAllowedTime = nMedianTimePast + 1;
     
     // Set initial time - will be adjusted by UpdateTime
-    pblock->nTime = nCurrentTime;
+    //pblock->nTime = nCurrentTime;
+    pblock->nTime = pindexPrev->GetBlockTime() + nMinSpacing;
     
     nLockTimeCutoff = (STANDARD_LOCKTIME_VERIFY_FLAGS & LOCKTIME_MEDIAN_TIME_PAST)
                        ? nMedianTimePast
@@ -317,14 +318,7 @@ CBlockTemplate* BlockAssembler::CreateNewBlock(const CScript& scriptPubKeyIn)
     // Apply final timestamp constraints
     //pblock->nTime = std::max(static_cast<uint32_t>(pblock->nTime), static_cast<uint32_t>(nMinAllowedTime));
     //pblock->nTime = std::min(static_cast<uint32_t>(pblock->nTime), static_cast<uint32_t>(nMaxFutureTime));
-    // Calculate the minimum allowed time based on consensus rules and minimum spacing
-    int64_t nMinAllowedTime = std::max({
-        static_cast<int64_t>(nMedianTimePast + 1),
-        pindexPrev->GetBlockTime() + nMinSpacing,
-        static_cast<int64_t>(pblock->nTime)
-    });
     
-    pblock->nTime = std::min(static_cast<uint32_t>(nMinAllowedTime), static_cast<uint32_t>(nMaxFutureTime));
     
     // Log timing information for debugging
     int64_t nActualSpacing = pblock->nTime - pindexPrev->GetBlockTime();
